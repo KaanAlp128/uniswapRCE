@@ -36,7 +36,6 @@ contract RowaToken is
 
     // start time
     uint256 public startTime;
-    
 
     constructor() ERC20(NAME, SYMBOL) {
         address owner = msg.sender;

@@ -58,11 +58,11 @@ async function main() {
   console.log("Approving UniswapV3Manager");
   await RowaToken.connect(user).approve(
     uniswapManager.address,
-    ethers.utils.parseEther("250000")
+    5*10**5
   );
   await MaticToken.connect(user).approve(
     uniswapManager.address,
-    ethers.utils.parseEther("10")
+    3*10**5
   );
   const ROWAallowance = await RowaToken.allowance(
     userAddress,
@@ -81,16 +81,19 @@ async function main() {
       ethers.utils.formatEther(MATICallowance)
   );
   console.log("Transfering Tokens...");
-  await RowaToken.transferFrom(
-    RowaToken.address,
+  await RowaToken.transfer(
     userAddress,
-    ethers.utils.parseEther("100000")
+    5*10**5
   );
-  await MaticToken.transferFrom(
-    MaticToken.address,
+  await MaticToken.transfer(
     userAddress,
-    ethers.utils.parseEther("10")
+    3*10**5
   );
+  const rowaBalance = await RowaToken.balanceOf(userAddress);
+  const maticBalance = await MaticToken.balanceOf(userAddress);
+  console.log(ethers.utils.formatEther(rowaBalance));
+  console.log(ethers.utils.formatEther(maticBalance));
+
   // Mint a position with our parameters
   console.log("Minting a position");
   // Create encoded data to be passed to the mint function
@@ -98,14 +101,14 @@ async function main() {
   const extraData = abi.encode(["address"], [userAddress]);
 
   console.log("Minting Pool....");
-
+  const liqudity = 151788234375150;
   await uniswapManager
     .connect(user)
     .executeMint(
       uniswapPoolAddress,
       -3000,
       3000,
-      ethers.utils.parseEther("100000"),
+      liqudity ,
       extraData
     );
 
