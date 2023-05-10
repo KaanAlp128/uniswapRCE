@@ -76,10 +76,6 @@ async function main() {
     userAddress,
     uniswapManager.address
   );
-  RowaBalance = await RowaToken.balanceOf(rowaERC20.address);
-  MaticBalance =await MaticToken.balanceOf(maticERC20.address);
-  console.log(RowaBalance);
-  console.log(MaticBalance);
   console.log(
     "Allowances:\n" +
       "ROWA: " +
