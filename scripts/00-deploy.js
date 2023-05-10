@@ -1,19 +1,15 @@
 // Setup and deploy all the contracts
-const {ethers, network, run} = require("hardhat");
+const { ethers, network, run } = require("hardhat");
 
 async function main() {
   console.log("Fetching contracts");
-  const contractFactory = await ethers.getContractFactory(
-    "UniswapV3Factory"
-  );
+  const contractFactory = await ethers.getContractFactory("UniswapV3Factory");
   const contractPool = await ethers.getContractFactory("UniswapV3Pool");
-  const contractManager = await ethers.getContractFactory(
-    "UniswapV3Manager"
-  );
+  const contractManager = await ethers.getContractFactory("UniswapV3Manager");
 
   const provider = new ethers.providers.JsonRpcProvider();
   const user = await provider.getSigner(0);
-  const user2 = await provider.getSigner(1);
+  const owner = await provider.getSigner(1);
 
   // Deploy the UniswapV3Factory contract
   console.log("Deploying UniswapV3Factory");
@@ -56,17 +52,17 @@ async function main() {
   console.log("Pool initialized!");
 
   // For the sake of this example, give free tokens to our user so later he can spend them as a LP
-  const userAddress = await user.getAddress();  
+  const userAddress = await user.getAddress();
 
   // Approve the manager from the user wallet so it can spend on his behalf
   console.log("Approving UniswapV3Manager");
   await RowaToken.connect(user).approve(
     uniswapManager.address,
-    ethers.utils.parseEther("300000")
+    ethers.utils.parseEther("250000")
   );
   await MaticToken.connect(user).approve(
     uniswapManager.address,
-    ethers.utils.parseEther("30")
+    ethers.utils.parseEther("10")
   );
   const ROWAallowance = await RowaToken.allowance(
     userAddress,
@@ -84,16 +80,24 @@ async function main() {
       "MATIC: " +
       ethers.utils.formatEther(MATICallowance)
   );
-  console.log("Transfering Tokens...")
-  await RowaToken.transferFrom(uniswapManager.address, userAddress, ethers.utils.parseEther('250000'));
-  await MaticToken.transferFrom(uniswapManager.address, userAddress, ethers.utils.parseEther('10'));
+  console.log("Transfering Tokens...");
+  await RowaToken.transferFrom(
+    RowaToken.address,
+    userAddress,
+    ethers.utils.parseEther("100000")
+  );
+  await MaticToken.transferFrom(
+    MaticToken.address,
+    userAddress,
+    ethers.utils.parseEther("10")
+  );
   // Mint a position with our parameters
   console.log("Minting a position");
   // Create encoded data to be passed to the mint function
   const abi = ethers.utils.defaultAbiCoder;
   const extraData = abi.encode(["address"], [userAddress]);
 
-  console.log("Minting Pool....")
+  console.log("Minting Pool....");
 
   await uniswapManager
     .connect(user)
@@ -107,17 +111,17 @@ async function main() {
 
   // Verbose logging to show the change in our pool
   const balanceRowa = await RowaToken.balanceOf(userAddress);
-  const balanceCreao = await MaticToken.balanceOf(userAddress);
+  const balanceMatic = await MaticToken.balanceOf(userAddress);
   const poolBalanceRowa = await RowaToken.balanceOf(uniswapPoolAddress);
-  const poolBalanceCreao = await MaticToken.balanceOf(uniswapPoolAddress);
+  const poolbalanceMatic = await MaticToken.balanceOf(uniswapPoolAddress);
   console.log("Minted successfully");
   console.log("User balance Rowa :" + ethers.utils.formatEther(balanceRowa));
-  console.log("User balance Creao :" + ethers.utils.formatEther(balanceCreao));
+  console.log("User balance Matic :" + ethers.utils.formatEther(balanceMatic));
   console.log(
     "Pool balance Rowa :" + ethers.utils.formatEther(poolBalanceRowa)
   );
   console.log(
-    "Pool balance Creao :" + ethers.utils.formatEther(poolBalanceCreao)
+    "Pool balance Matic :" + ethers.utils.formatEther(poolbalanceMatic)
   );
 }
 
