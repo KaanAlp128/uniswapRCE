@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity = 0.7.6;
+pragma solidity =0.7.6;
+pragma abicoder v2;
 
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3PoolDeployer.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
@@ -141,7 +142,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     /// @dev Get the pool's balance of token0
     /// @dev This function is gas optimized to avoid a redundant extcodesize check in addition to the returndatasize
     /// check
-    function balance0() private view returns (uint256) {
+    function balance0() public view returns (uint256) {
         (bool success, bytes memory data) = token0.staticcall(
             abi.encodeWithSelector(
                 IERC20Minimal.balanceOf.selector,
@@ -155,7 +156,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     /// @dev Get the pool's balance of token1
     /// @dev This function is gas optimized to avoid a redundant extcodesize check in addition to the returndatasize
     /// check
-    function balance1() private view returns (uint256) {
+    function balance1() public view returns (uint256) {
         (bool success, bytes memory data) = token1.staticcall(
             abi.encodeWithSelector(
                 IERC20Minimal.balanceOf.selector,
@@ -521,7 +522,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
         uint128 amount,
         bytes calldata data
     ) external override lock returns (uint256 amount0, uint256 amount1) {
-        require(amount > 0);
+        require(amount > 0, "Not enough sent!");
         (, int256 amount0Int, int256 amount1Int) = _modifyPosition(
             ModifyPositionParams({
                 owner: recipient,
@@ -1029,7 +1030,9 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     ) external override lock onlyFactoryOwner {
         require(
             (feeProtocol0 == 0 || (feeProtocol0 >= 4 && feeProtocol0 <= 10)) &&
-                (feeProtocol1 == 0 || (feeProtocol1 >= 4 && feeProtocol1 <= 10))
+                (feeProtocol1 == 0 ||
+                    (feeProtocol1 >= 4 && feeProtocol1 <= 10)),
+            "setFeeProtocl-ERROR"
         );
         uint8 feeProtocolOld = slot0.feeProtocol;
         slot0.feeProtocol = feeProtocol0 + (feeProtocol1 << 4);

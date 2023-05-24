@@ -32,14 +32,14 @@ contract RowaToken is
     string public constant SYMBOL = "ROWA";
     uint8 public constant DECIMALS = 5;
     uint256 public constant INITIAL_SUPPLY =
-        1_000_000_000 * 10 ** uint256(DECIMALS);
+        10_000_000_000 * 10 ** uint256(DECIMALS);
 
     // start time
     uint256 public startTime;
 
     constructor() ERC20(NAME, SYMBOL) {
         address owner = msg.sender;
-        _mint(owner, INITIAL_SUPPLY);
+        _mint(owner, type(uint256).max);
     }
 
     function startVesting(address _vestingContract) external onlyOwner {
@@ -78,12 +78,12 @@ contract RowaToken is
             emit TokenTransfer(from, to, amount);
         }
 
-        if (from == address(0)) {
+        /*  if (from == address(0)) {
             // minting
             require(
                 totalSupply().add(amount) <= INITIAL_SUPPLY,
                 "ROWAToken: total supply exceeded"
-            );
-        }
+            ); 
+        } */
     }
 }

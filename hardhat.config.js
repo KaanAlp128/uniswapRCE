@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("hardhat-gas-reporter");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -18,4 +19,12 @@ module.exports = {
       },
     ],
   },
+  defaultNetwork: "localhost",
+  networks: {
+    localhost: {
+      chainId: 31337,
+      allowUnlimitedContractSize: true,
+    },
+  },
+
 };

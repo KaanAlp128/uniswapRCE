@@ -12,17 +12,23 @@
     "chai": "^4.2.0",
     "ethers": "^5.4.7",
     "hardhat": "^2.14.0",
-    "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.8.0",
     "typechain": "^8.1.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.3",
     "@uniswap/v3-core": "^1.0.1",
+    "hardhat-gas-reporter": "^1.0.8",
     "nodejs": "^0.0.0",
-    "prettier": "^2.8.8"
+    "npm": "^9.6.7",
+    "prettier": "^2.8.8",
+    "ts-node": ">=8.0.0",
+    "typescript": ">=4.5.0"
   },
-  "scripts":{
-    "compile": "yarn solcjs --include-path node_modules/ contracts . -o . Lock.sol"
+  "scripts": {
+    "compile": "yarn solcjs --include-path node_modules/ contracts . -o . Lock.sol",
+    "deploy00": "yarn hardhat run --network localhost scripts/00-deploy.js",
+    "deploy01": "yarn hardhat run --network localhost scripts/01-deploy.js",
+    "node": "yarn hardhat node"
   }
 }
